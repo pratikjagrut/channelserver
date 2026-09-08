@@ -20,13 +20,23 @@ type Channel struct {
 }
 
 type Release struct {
-	Version                 string                   `json:"version,omitempty"`
-	ChannelServerMinVersion string                   `json:"minChannelServerVersion,omitempty"`
-	ChannelServerMaxVersion string                   `json:"maxChannelServerVersion,omitempty"`
-	ServerArgs              map[string]schemas.Field `json:"serverArgs,omitempty"`
-	AgentArgs               map[string]schemas.Field `json:"agentArgs,omitempty"`
-	FeatureVersions         map[string]string        `json:"featureVersions,omitempty"`
-	Charts                  map[string]Chart         `json:"charts,omitempty"`
+	Version                 string            `json:"version,omitempty"`
+	ChannelServerMinVersion string            `json:"minChannelServerVersion,omitempty"`
+	ChannelServerMaxVersion string            `json:"maxChannelServerVersion,omitempty"`
+	ServerArgs              map[string]Arg    `json:"serverArgs,omitempty"`
+	AgentArgs               map[string]Arg    `json:"agentArgs,omitempty"`
+	FeatureVersions         map[string]string `json:"featureVersions,omitempty"`
+	Charts                  map[string]Chart  `json:"charts,omitempty"`
+}
+
+// Arg describes a single K3s/RKE2 server or agent argument as published by KDM.
+// The embedded schemas.Field is inlined on the wire, so the serialized form is a
+// flat object.
+type Arg struct {
+	schemas.Field
+	// RestartScope lists the node scopes that should be restarted when this
+	// argument changes. Today this is limited to downstream workers.
+	RestartScope []string `json:"restartScope,omitempty"`
 }
 
 type Chart struct {
